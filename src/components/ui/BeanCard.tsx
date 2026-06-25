@@ -1,15 +1,20 @@
 import React from 'react';
 import { Plus } from 'lucide-react';
+import Link from 'next/link';
 
 interface BeanCardProps {
   brand: string;
   name: string;
   price: number;
+  slug?: string;
+  roaster?: string;
+  roastLevel?: string;
+  tastingNotes?: string[];
 }
 
-export default function BeanCard({ brand, name, price }: BeanCardProps) {
-  return (
-    <div className="flex items-center group cursor-pointer">
+export default function BeanCard({ brand, name, price, slug }: BeanCardProps) {
+  const content = (
+    <div className="flex items-center group cursor-pointer border-4 border-transparent hover:border-brand-dark p-2 transition-all">
       <div className="w-12 h-12 bg-brand-dark flex flex-col items-center justify-center shrink-0 border-2 border-brand-dark group-hover:bg-brand-lime group-hover:text-brand-dark text-brand-white transition-colors">
         <span className="text-[8px] font-bold uppercase tracking-widest leading-none">Bag</span>
       </div>
@@ -25,4 +30,10 @@ export default function BeanCard({ brand, name, price }: BeanCardProps) {
       </button>
     </div>
   );
+
+  if (slug) {
+    return <Link href={`/beans/${slug}`} className="block">{content}</Link>;
+  }
+
+  return content;
 }
