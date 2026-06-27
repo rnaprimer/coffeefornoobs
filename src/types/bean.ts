@@ -11,5 +11,6 @@ export interface Bean {
   tastingNotes: string[];
   brewingRecommendations: string[];
   relatedBeans: string[]; // array of bean slugs
+  imageUrl?: string;
   imageText: string;
 }

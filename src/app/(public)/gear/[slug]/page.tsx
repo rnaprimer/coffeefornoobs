@@ -1,21 +1,29 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
-import { products } from '../../../../data/products';
+import { getProducts, getProductBySlug } from '../../../../lib/queries/products';
 import Container from '../../../../components/layout/Container';
 import ProductHero from '../../../../components/gear/ProductHero';
 import ProductProsCons from '../../../../components/gear/ProductProsCons';
 import ProductSpecs from '../../../../components/gear/ProductSpecs';
 import Link from 'next/link';
+import { Metadata } from 'next';
+import { constructMetadata } from '../../../../lib/seo';
 
-export function generateStaticParams() {
-  return products.map((product) => ({
-    slug: product.slug,
-  }));
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const product = await getProductBySlug(slug);
+  if (!product) return {};
+
+  return constructMetadata({
+    title: product.name,
+    description: product.description,
+    url: `https://coffeefornoobs.com/gear/${slug}`
+  });
 }
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const product = products.find((p) => p.slug === slug);
+  const product = await getProductBySlug(slug);
 
   if (!product) {
     notFound();
@@ -53,3 +61,4 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     </div>
   );
 }
+

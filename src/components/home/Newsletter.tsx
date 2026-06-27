@@ -2,21 +2,27 @@ import React from 'react';
 import { Camera, Video, MessageSquare, Mail } from 'lucide-react';
 import Container from '../layout/Container';
 import Button from '../ui/Button';
+import { HomepageSection } from '@/types/homepage';
+import Image from 'next/image';
 
-export default function Newsletter() {
+interface NewsletterProps {
+  section: HomepageSection;
+}
+
+export default function Newsletter({ section }: NewsletterProps) {
   return (
     <section className="bg-brand-pink relative">
       <Container className="flex flex-col lg:flex-row py-16 gap-12 lg:gap-24">
         
         {/* Left: Newsletter Form */}
         <div className="flex-1 max-w-md">
-          <h2 className="text-4xl font-black uppercase tracking-tighter leading-[0.9] mb-4">
-            Good Coffee.<br />Good Life.
+          <h2 className="text-4xl font-black uppercase tracking-tighter leading-[0.9] mb-4 whitespace-pre-line">
+            {section.title || 'Good Coffee.\nGood Life.'}
           </h2>
           <p className="text-sm font-medium mb-6">
-            Join 10,000+ beginners learning and brewing better coffee every week.
+            {section.description || 'Join 10,000+ beginners learning and brewing better coffee every week.'}
           </p>
-          <form className="flex border-4 border-brand-dark bg-brand-white shadow-[4px_4px_0px_#111111]">
+          <form className="flex border border-brand-dark bg-brand-white rounded-full overflow-hidden">
             <input 
               type="email" 
               placeholder="Enter your email" 
@@ -25,9 +31,9 @@ export default function Newsletter() {
             />
             <button 
               type="submit" 
-              className="bg-brand-lime px-6 py-3 font-bold text-sm uppercase border-l-4 border-brand-dark hover:bg-yellow-400 transition-colors"
+              className="bg-brand-lime px-6 py-3 font-bold text-sm uppercase border-l border-brand-dark hover:bg-yellow-400 transition-colors"
             >
-              Subscribe
+              {section.button_text || 'Subscribe'}
             </button>
           </form>
         </div>
@@ -59,21 +65,21 @@ export default function Newsletter() {
         <div className="flex flex-col gap-6 items-start lg:items-end">
           <h4 className="font-black text-xs uppercase tracking-widest">Follow Us</h4>
           <div className="flex gap-4">
-            <a href="#" className="w-10 h-10 rounded-full border-2 border-brand-dark flex items-center justify-center hover:bg-brand-white transition-colors">
+            <a href="#" className="w-10 h-10 rounded-full border border-brand-dark flex items-center justify-center hover:bg-brand-white transition-colors">
               <Camera size={18} />
             </a>
-            <a href="#" className="w-10 h-10 rounded-full border-2 border-brand-dark flex items-center justify-center hover:bg-brand-white transition-colors">
+            <a href="#" className="w-10 h-10 rounded-full border border-brand-dark flex items-center justify-center hover:bg-brand-white transition-colors">
               <Video size={18} />
             </a>
-            <a href="#" className="w-10 h-10 rounded-full border-2 border-brand-dark flex items-center justify-center hover:bg-brand-white transition-colors">
+            <a href="#" className="w-10 h-10 rounded-full border border-brand-dark flex items-center justify-center hover:bg-brand-white transition-colors">
               <MessageSquare size={18} />
             </a>
-            <a href="#" className="w-10 h-10 rounded-full border-2 border-brand-dark flex items-center justify-center hover:bg-brand-white transition-colors">
+            <a href="#" className="w-10 h-10 rounded-full border border-brand-dark flex items-center justify-center hover:bg-brand-white transition-colors">
               <Mail size={18} />
             </a>
           </div>
 
-          <div className="mt-8 w-32 h-40 bg-brand-white border-4 border-brand-dark flex flex-col items-center justify-center text-center p-2 shadow-[4px_4px_0px_#111111]">
+          <div className="mt-8 w-32 h-40 bg-brand-white border border-brand-dark flex flex-col items-center justify-center text-center p-2 rounded-lg">
             <span className="font-bold text-[10px]">Coffee Pot<br/>Illustration</span>
           </div>
         </div>

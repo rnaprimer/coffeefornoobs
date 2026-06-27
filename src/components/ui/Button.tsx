@@ -17,7 +17,7 @@ export default function Button({
   ...props 
 }: ButtonProps) {
   
-  const baseClasses = "inline-flex items-center justify-center font-bold text-sm uppercase px-6 py-3 brutal-border brutal-shadow hover:brutal-shadow-hover transition-all";
+  const baseClasses = "inline-flex items-center justify-center font-bold text-sm uppercase px-6 py-3 rounded-full brutal-border brutal-shadow hover:brutal-shadow-hover transition-all";
   
   const variantClasses = {
     primary: "bg-brand-lime text-brand-dark",

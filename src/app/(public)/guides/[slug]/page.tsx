@@ -1,18 +1,29 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
-import { guides } from '../../../../data/guides';
+import { getGuides, getGuideBySlug } from '../../../../lib/queries/guides';
 import Container from '../../../../components/layout/Container';
+import { ContentRenderer } from '../../../../components/content/ContentRenderer';
 import Link from 'next/link';
+import { Metadata } from 'next';
+import { constructMetadata } from '../../../../lib/seo';
 
-export function generateStaticParams() {
-  return guides.map((guide) => ({
-    slug: guide.slug,
-  }));
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const guide = await getGuideBySlug(slug);
+  if (!guide) return {};
+
+  return constructMetadata({
+    title: guide.title,
+    description: guide.content.substring(0, 150),
+    url: `https://coffeefornoobs.com/guides/${slug}`
+  });
 }
+
+
 
 export default async function GuideDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const guide = guides.find((g) => g.slug === slug);
+  const guide = await getGuideBySlug(slug);
 
   if (!guide) {
     notFound();
@@ -39,13 +50,20 @@ export default async function GuideDetailPage({ params }: { params: Promise<{ sl
           <p className="text-xl font-bold text-brand-dark">By {guide.author}</p>
         </div>
         
-        <div className="max-w-3xl mx-auto border-4 border-brand-dark p-8 md:p-12 bg-brand-white shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
-          <div className="text-lg text-brand-dark font-medium leading-relaxed space-y-6">
-            <p>{guide.content}</p>
-            <p>This section is a static placeholder for future markdown or rich-text CMS content. It demonstrates how the guide content will be displayed and styled.</p>
+        <div className="max-w-4xl mx-auto border-4 border-brand-dark p-8 md:p-12 bg-brand-white shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
+          <div className="prose prose-lg max-w-none prose-headings:font-black prose-headings:text-brand-dark prose-headings:uppercase prose-p:text-brand-dark prose-p:font-medium prose-a:text-brand-lime prose-a:bg-brand-dark prose-a:px-1 prose-a:font-bold hover:prose-a:bg-brand-pink prose-a:no-underline prose-strong:text-brand-dark prose-strong:bg-brand-lime/30 prose-strong:px-1">
+            {(guide as any).content_json ? (
+              <ContentRenderer content={(guide as any).content_json} />
+            ) : (
+              <div className="text-lg text-brand-dark font-medium leading-relaxed space-y-6">
+                <p>{guide.content}</p>
+                <p>This section is a static placeholder for future markdown or rich-text CMS content. It demonstrates how the guide content will be displayed and styled.</p>
+              </div>
+            )}
           </div>
         </div>
       </Container>
     </div>
   );
 }
+

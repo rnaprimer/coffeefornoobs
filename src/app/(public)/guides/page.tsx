@@ -3,11 +3,12 @@ import Container from '../../../components/layout/Container';
 import PageHeader from '../../../components/shared/PageHeader';
 import GuideHero from '../../../components/guides/GuideHero';
 import GuideGrid from '../../../components/guides/GuideGrid';
-import { guides } from '../../../data/guides';
+import { getGuides } from '../../../lib/queries/guides';
 
-export default function GuidesPage() {
-  const featuredGuide = guides[0];
-  const remainingGuides = guides.slice(1);
+export default async function GuidesPage() {
+  const guides = await getGuides();
+  const featuredGuide = guides.find(g => g.slug === 'how-to-make-coffee-in-a-french-press') || guides[0];
+  const remainingGuides = guides.filter(g => g.id !== featuredGuide?.id);
 
   return (
     <div className="min-h-screen bg-brand-white pb-20">
@@ -39,3 +40,4 @@ export default function GuidesPage() {
     </div>
   );
 }
+

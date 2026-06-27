@@ -1,17 +1,23 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface GuideCardProps {
   slug: string;
   title: string;
   coverImageText: string;
+  coverImageUrl?: string;
 }
 
-export default function GuideCard({ slug, title, coverImageText }: GuideCardProps) {
+export default function GuideCard({ slug, title, coverImageText, coverImageUrl }: GuideCardProps) {
   return (
     <Link href={`/guides/${slug}`} className="block border-4 border-brand-dark overflow-hidden group bg-brand-white shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] hover:-translate-y-1 hover:translate-x-1 hover:shadow-[0px_0px_0px_0px_rgba(17,17,17,1)] transition-all h-full flex flex-col">
-      <div className="h-48 bg-brand-dark flex items-center justify-center border-b-4 border-brand-dark p-6 text-center">
-        <span className="text-brand-white font-black uppercase tracking-widest leading-tight group-hover:text-brand-lime transition-colors">{coverImageText}</span>
+      <div className="h-48 bg-brand-dark flex items-center justify-center border-b-4 border-brand-dark p-6 text-center relative overflow-hidden">
+        {coverImageUrl ? (
+          <Image src={coverImageUrl} alt={title} fill className="object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+        ) : (
+          <span className="text-brand-white font-black uppercase tracking-widest leading-tight group-hover:text-brand-lime transition-colors relative z-10">{coverImageText}</span>
+        )}
       </div>
       <div className="p-6 flex-1 flex flex-col justify-between">
         <h3 className="text-xl font-black uppercase text-brand-dark leading-tight mb-4 group-hover:underline decoration-2 underline-offset-2">{title}</h3>

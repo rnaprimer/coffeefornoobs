@@ -4,4 +4,5 @@ export interface Roaster {
   name: string;
   location: string;
   description: string;
+  logoUrl?: string;
 }

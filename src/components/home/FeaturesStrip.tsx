@@ -27,7 +27,7 @@ const features = [
 
 export default function FeaturesStrip() {
   return (
-    <section className="bg-brand-white py-12 border-b-4 border-brand-dark">
+    <section className="bg-brand-white py-8 border-b border-brand-dark">
       <Container className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {features.map((feature, idx) => {
           const Icon = feature.icon;

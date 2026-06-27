@@ -1,52 +1,63 @@
 import React from 'react';
 import { ArrowRight, Search } from 'lucide-react';
 import Button from '../ui/Button';
+import { HomepageSection } from '@/types/homepage';
+import Link from 'next/link';
+import Image from 'next/image';
 
-export default function Hero() {
+interface HeroProps {
+  section: HomepageSection;
+}
+
+export default function Hero({ section }: HeroProps) {
   return (
-    <section className="w-full flex flex-col lg:flex-row border-b-4 border-brand-dark">
+    <section className="w-full flex flex-col lg:flex-row border-b border-brand-dark">
       {/* Left side (Pink) */}
       <div className="bg-brand-pink flex-1 p-8 lg:p-16 relative overflow-hidden flex flex-col justify-center">
         <div className="max-w-xl z-10">
-          <p className="font-bold text-sm tracking-widest uppercase mb-4">Welcome Back, Brewer</p>
-          <h1 className="text-6xl lg:text-8xl font-black uppercase tracking-tighter leading-[0.85] mb-6">
-            Coffee<br />For Noobs
+          <p className="font-bold text-sm tracking-widest uppercase mb-4">{section.subtitle || 'Welcome Back, Brewer'}</p>
+          
+          <h1 className="text-6xl lg:text-8xl font-black uppercase tracking-tighter leading-[0.85] mb-6 whitespace-pre-line">
+            {section.title || 'Coffee\nFor Noobs'}
           </h1>
+          
           <p className="text-lg font-medium mb-8 max-w-md leading-relaxed">
-            Honest gear recommendations, easy brewing guides and everything a beginner needs to make amazing coffee.
+            {section.description || 'Honest gear recommendations, easy brewing guides and everything a beginner needs to make amazing coffee.'}
           </p>
           
           <div className="flex flex-wrap gap-4 mb-8">
-            <Button variant="primary" icon={ArrowRight}>Find My Setup</Button>
+            {section.button_text && (
+              <Link href={section.button_url || '#'}>
+                <Button variant="primary" icon={ArrowRight}>{section.button_text}</Button>
+              </Link>
+            )}
             <Button variant="secondary" className="bg-brand-pink hover:bg-brand-white">Browse Gear</Button>
           </div>
 
-          <div className="flex items-center bg-brand-white brutal-border p-2 rounded max-w-md">
-            <Search size={20} className="text-gray-400 mx-2" />
-            <input 
-              type="text" 
-              placeholder="Search guides, gear, and coffee beans..." 
-              className="flex-1 outline-none font-medium bg-transparent text-sm w-full"
-            />
-          </div>
         </div>
 
         {/* Tilted placeholder illustration */}
-        <div className="hidden xl:flex absolute right-8 top-1/2 -translate-y-1/2 w-[350px] h-[450px] bg-brand-white brutal-border rotate-3 shadow-[8px_8px_0px_#111111] items-center justify-center text-center p-4 z-0">
-          <p className="font-bold">Walking Guy<br/>Illustration Placeholder</p>
-        </div>
+        {section.media?.url ? (
+          <div className="hidden xl:flex absolute right-8 top-1/2 -translate-y-1/2 w-[350px] h-[450px] bg-brand-white brutal-border rotate-3 shadow-[8px_8px_0px_#111111] items-center justify-center text-center p-4 z-0">
+             <Image src={section.media.url} alt={section.title || ''} fill className="object-cover" />
+          </div>
+        ) : (
+          <div className="hidden xl:flex absolute right-8 top-1/2 -translate-y-1/2 w-[350px] h-[450px] bg-brand-white brutal-border rotate-3 shadow-[8px_8px_0px_#111111] items-center justify-center text-center p-4 z-0">
+            <p className="font-bold">Walking Guy<br/>Illustration Placeholder</p>
+          </div>
+        )}
       </div>
 
       {/* Right side (Beginner Setups) */}
-      <div className="w-full lg:w-[400px] bg-brand-white flex flex-col border-l-0 lg:border-l-4 border-brand-dark shrink-0">
-        <div className="p-6 border-b-4 border-brand-dark bg-brand-white">
+      <div className="w-full lg:w-[400px] bg-brand-white flex flex-col border-l-0 lg:border-l border-brand-dark shrink-0">
+        <div className="p-6 border-b border-brand-dark bg-brand-white">
           <h2 className="text-3xl font-black uppercase tracking-tight mb-2">Beginner<br/>Setups</h2>
           <p className="text-sm font-medium">Curated setups for every budget.</p>
         </div>
         
         <div className="flex flex-col flex-1">
           {/* Setup 1 */}
-          <div className="p-6 border-b-4 border-brand-dark bg-brand-white hover:bg-gray-50 cursor-pointer flex flex-col group flex-1 justify-center">
+          <div className="p-6 border-b border-brand-dark bg-brand-white hover:bg-gray-50 cursor-pointer flex flex-col group flex-1 justify-center">
             <h3 className="font-bold text-lg mb-4">₹2,000 SETUP</h3>
             <div className="flex items-end justify-between">
               <div className="flex items-end gap-2">
@@ -61,7 +72,7 @@ export default function Hero() {
           </div>
           
           {/* Setup 2 */}
-          <div className="p-6 border-b-4 border-brand-dark bg-brand-white hover:bg-gray-50 cursor-pointer flex flex-col group flex-1 justify-center">
+          <div className="p-6 border-b border-brand-dark bg-brand-white hover:bg-gray-50 cursor-pointer flex flex-col group flex-1 justify-center">
             <h3 className="font-bold text-lg mb-4">₹5,000 SETUP</h3>
             <div className="flex items-end justify-between">
               <div className="flex items-end gap-2">
@@ -76,7 +87,7 @@ export default function Hero() {
           </div>
 
           {/* Setup 3 */}
-          <div className="p-6 border-b-4 border-brand-dark bg-brand-white hover:bg-gray-50 cursor-pointer flex flex-col group flex-1 justify-center">
+          <div className="p-6 border-b border-brand-dark bg-brand-white hover:bg-gray-50 cursor-pointer flex flex-col group flex-1 justify-center">
             <h3 className="font-bold text-lg mb-4">₹10,000 SETUP</h3>
             <div className="flex items-end justify-between">
               <div className="flex items-end gap-2">

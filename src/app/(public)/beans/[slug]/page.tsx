@@ -1,18 +1,29 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
-import { beans } from '../../../../data/beans';
+import { getBeans, getBeanBySlug } from '../../../../lib/queries/beans';
 import Container from '../../../../components/layout/Container';
 import Link from 'next/link';
+import Image from 'next/image';
+import { Metadata } from 'next';
+import { constructMetadata } from '../../../../lib/seo';
 
-export function generateStaticParams() {
-  return beans.map((bean) => ({
-    slug: bean.slug,
-  }));
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const bean = await getBeanBySlug(slug);
+  if (!bean) return {};
+
+  return constructMetadata({
+    title: `${bean.name} by ${bean.brand}`,
+    description: `Origin: ${bean.origin} | Process: ${bean.process} | Roast Level: ${bean.roastLevel}`,
+    url: `https://coffeefornoobs.com/beans/${slug}`
+  });
 }
+
+
 
 export default async function BeanDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const bean = beans.find((b) => b.slug === slug);
+  const bean = await getBeanBySlug(slug);
 
   if (!bean) {
     notFound();
@@ -30,8 +41,15 @@ export default async function BeanDetailPage({ params }: { params: Promise<{ slu
         </div>
 
         <div className="border-4 border-brand-dark bg-brand-lime shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] mb-12 flex flex-col md:flex-row overflow-hidden">
-          <div className="md:w-1/2 p-12 bg-brand-dark flex items-center justify-center">
-            <span className="font-black text-3xl uppercase tracking-widest text-brand-white">{bean.imageText}</span>
+          <div className="md:w-1/2 p-12 bg-brand-dark flex items-center justify-center relative min-h-[300px]">
+            {bean.imageUrl ? (
+              <div className="absolute inset-0">
+                <Image src={bean.imageUrl} alt={bean.name} fill className="object-cover opacity-80" />
+                <div className="absolute inset-0 bg-brand-dark/20 mix-blend-multiply" />
+              </div>
+            ) : (
+              <span className="font-black text-3xl uppercase tracking-widest text-brand-white relative z-10">{bean.imageText}</span>
+            )}
           </div>
           <div className="md:w-1/2 p-8 md:p-12 flex flex-col justify-center bg-brand-white border-l-4 border-brand-dark">
             <h1 className="text-4xl md:text-5xl font-black uppercase text-brand-dark mb-2">{bean.name}</h1>
@@ -69,3 +87,4 @@ export default async function BeanDetailPage({ params }: { params: Promise<{ slu
     </div>
   );
 }
+

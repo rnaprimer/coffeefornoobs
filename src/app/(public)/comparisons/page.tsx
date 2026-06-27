@@ -2,9 +2,10 @@ import React from 'react';
 import Container from '../../../components/layout/Container';
 import PageHeader from '../../../components/shared/PageHeader';
 import ComparisonGrid from '../../../components/comparisons/ComparisonGrid';
-import { comparisons } from '../../../data/comparisons';
+import { getComparisons } from '../../../lib/queries/comparisons';
 
-export default function ComparisonsPage() {
+export default async function ComparisonsPage() {
+  const comparisons = await getComparisons();
   const featured = comparisons[0];
 
   return (
@@ -36,3 +37,4 @@ export default function ComparisonsPage() {
     </div>
   );
 }
+

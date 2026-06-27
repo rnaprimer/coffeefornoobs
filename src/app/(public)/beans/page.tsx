@@ -2,10 +2,12 @@ import React from 'react';
 import Container from '../../../components/layout/Container';
 import PageHeader from '../../../components/shared/PageHeader';
 import BeanGrid from '../../../components/beans/BeanGrid';
-import { beans } from '../../../data/beans';
-import { roasters } from '../../../data/roasters';
+import { getBeans, getRoasters } from '../../../lib/queries/beans';
 
-export default function BeansPage() {
+export default async function BeansPage() {
+  const beans = await getBeans();
+  const roasters = await getRoasters();
+
   return (
     <div className="min-h-screen bg-brand-white pb-20">
       <PageHeader 
@@ -32,3 +34,4 @@ export default function BeansPage() {
     </div>
   );
 }
+

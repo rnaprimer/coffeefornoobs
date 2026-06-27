@@ -6,6 +6,7 @@ export interface Product {
   rating: number;
   reviews: number;
   badge?: string;
+  imageUrl?: string;
   imageText: string;
   description: string;
   pros: string[];
