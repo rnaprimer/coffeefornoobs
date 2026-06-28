@@ -31,6 +31,7 @@ const navigation = [
   { name: 'Beans', href: '/admin/beans', icon: Coffee },
   { name: 'Roasters', href: '/admin/roasters', icon: Store },
   { name: 'Comparisons', href: '/admin/comparisons', icon: ArrowRightLeft },
+  { name: 'Infrastructure', href: '/admin/infrastructure', icon: Settings },
   { name: 'Settings', href: '/admin/settings', icon: Settings },
 ]
 
