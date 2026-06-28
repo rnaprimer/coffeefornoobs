@@ -8,6 +8,7 @@ import NotificationsList from '@/components/admin/infrastructure/NotificationsLi
 import JobsTable from '@/components/admin/infrastructure/JobsTable';
 import HealthStatus from '@/components/admin/infrastructure/HealthStatus';
 import ActivityTimeline from '@/components/admin/infrastructure/ActivityTimeline';
+import ManualControls from '@/components/admin/infrastructure/ManualControls';
 
 export const metadata = {
   title: 'Infrastructure Dashboard | CoffeeForNoobs Admin',
@@ -164,10 +165,12 @@ export default async function InfrastructureDashboard() {
 
         {/* SCHEDULER TAB */}
         <TabPanel tabId="scheduler">
-          <div className="bg-white shadow sm:rounded-lg px-4 py-5 sm:p-6">
+          <ManualControls />
+          
+          <div className="bg-white shadow sm:rounded-lg px-4 py-5 sm:p-6 mt-8">
             <h3 className="text-lg font-medium leading-6 text-gray-900">Cron Configuration</h3>
-            <p className="mt-1 text-sm text-gray-500">Vercel Cron is configured to trigger <code>/api/jobs/schedule</code> every minute.</p>
-            <p className="mt-2 text-sm text-gray-500">The scheduler then evaluates the following recurring tasks.</p>
+            <p className="mt-1 text-sm text-gray-500">Vercel Cron has been disabled for Hobby plan compatibility. You can manually run the scheduler above, or rename <code>vercel.prod.json</code> to <code>vercel.json</code> when upgrading to a Pro plan.</p>
+            <p className="mt-2 text-sm text-gray-500">The scheduler evaluates the following recurring tasks.</p>
           </div>
         </TabPanel>
 
