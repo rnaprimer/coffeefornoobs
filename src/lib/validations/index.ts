@@ -92,3 +92,4 @@ export const comparisonSchema = baseContentSchema.extend({
 })
 
 export * from './tag'
+export * from './affiliate'

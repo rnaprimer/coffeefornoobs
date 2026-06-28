@@ -11,7 +11,9 @@ import {
   Store,
   Layers,
   ArrowRightLeft,
-  Hash
+  Hash,
+  ShoppingCart,
+  Link2
 } from 'lucide-react'
 import { logout } from '@/actions/auth'
 
@@ -19,6 +21,8 @@ const navigation = [
   { name: 'Media Library', href: '/admin/media', icon: LayoutDashboard },
   { name: 'Homepage CMS', href: '/admin/homepage', icon: LayoutDashboard },
   { name: 'Products', href: '/admin/products', icon: Package },
+  { name: 'Merchants', href: '/admin/merchants', icon: ShoppingCart },
+  { name: 'Affiliate Programs', href: '/admin/affiliate-programs', icon: Link2 },
   { name: 'Brands', href: '/admin/brands', icon: Tag },
   { name: 'Categories', href: '/admin/categories', icon: Layers },
   { name: 'Tags', href: '/admin/tags', icon: Hash },

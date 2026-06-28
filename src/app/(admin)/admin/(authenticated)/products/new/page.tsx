@@ -13,10 +13,17 @@ export default async function NewProductPage() {
     return <div>Supabase not configured</div>
   }
 
-  // Fetch categories and brands for dropdowns
-  const [{ data: categories }, { data: brands }] = await Promise.all([
+  // Fetch categories, brands, merchants, and affiliate programs for dropdowns
+  const [
+    { data: categories },
+    { data: brands },
+    { data: merchants },
+    { data: affiliatePrograms }
+  ] = await Promise.all([
     supabase.from('categories').select('id, name').is('deleted_at', null).order('name'),
-    supabase.from('brands').select('id, name').is('deleted_at', null).order('name')
+    supabase.from('brands').select('id, name').is('deleted_at', null).order('name'),
+    (supabase as any).from('merchants').select('id, name').order('name'),
+    (supabase as any).from('affiliate_programs').select('id, program_name, merchant_id').order('program_name')
   ])
 
   return (
@@ -25,6 +32,9 @@ export default async function NewProductPage() {
       <ProductForm 
         categories={(categories as any) || []} 
         brands={(brands as any) || []} 
+        merchants={(merchants as any) || []}
+        affiliatePrograms={(affiliatePrograms as any) || []}
+        productMerchants={[]}
       />
     </>
   )

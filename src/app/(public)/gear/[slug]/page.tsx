@@ -7,6 +7,7 @@ import ProductProsCons from '../../../../components/gear/ProductProsCons';
 import ProductSpecs from '../../../../components/gear/ProductSpecs';
 import Link from 'next/link';
 import { Metadata } from 'next';
+import { createClient } from '../../../../lib/supabase/server';
 import { constructMetadata } from '../../../../lib/seo';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -29,6 +30,19 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     notFound();
   }
 
+  // Fetch product merchants from database
+  const supabase = await createClient();
+  let productMerchants: any[] = [];
+  
+  if (supabase) {
+    const { data } = await (supabase as any)
+      .from('product_merchants')
+      .select('*, merchants(*, media:logo_media_id(url)), affiliate_programs(*)')
+      .eq('product_id', product.id)
+      .eq('status', 'active');
+    productMerchants = data || [];
+  }
+
   return (
     <div className="min-h-screen bg-brand-white pb-20 pt-12">
       <Container>
@@ -40,7 +54,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
           <span className="text-brand-lime bg-brand-dark px-2 py-1">{product.name}</span>
         </div>
 
-        <ProductHero product={product} />
+        <ProductHero product={product} productMerchants={productMerchants} />
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           <div className="lg:col-span-2">
@@ -61,4 +75,3 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     </div>
   );
 }
-

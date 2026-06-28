@@ -1,8 +1,26 @@
 import React from 'react';
 import { Product } from '../../types/product';
 import Image from 'next/image';
+import { getBestMerchant, getMerchantOptions, formatPrice } from '../../lib/affiliate';
+import { MerchantComparison, BuyButton } from '../affiliate';
 
-export default function ProductHero({ product }: { product: Product }) {
+interface ProductHeroProps {
+  product: Product;
+  productMerchants?: any[];
+}
+
+export default function ProductHero({ product, productMerchants = [] }: ProductHeroProps) {
+  const bestMerchant = getBestMerchant(productMerchants);
+  const otherMerchants = getMerchantOptions(productMerchants).filter(m => m.id !== bestMerchant?.id);
+
+  // Fallback price
+  const displayPrice = bestMerchant && bestMerchant.current_price !== undefined
+    ? formatPrice(bestMerchant.current_price, bestMerchant.currency)
+    : `₹${product.price}`;
+
+  const buttonText = bestMerchant?.buy_button_text || (bestMerchant ? `Buy from ${bestMerchant.merchants?.name}` : 'Check Latest Price');
+  const bestMerchantSlug = bestMerchant?.merchants?.slug || '';
+
   return (
     <div className="border-4 border-brand-dark bg-brand-pink shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] mb-12 flex flex-col md:flex-row overflow-hidden">
       <div className="md:w-1/2 p-12 bg-brand-dark flex items-center justify-center relative min-h-[300px]">
@@ -17,23 +35,49 @@ export default function ProductHero({ product }: { product: Product }) {
           </div>
         )}
       </div>
-      <div className="md:w-1/2 p-8 md:p-12 flex flex-col justify-center bg-brand-white border-l-4 border-brand-dark">
+      
+      <div className="md:w-1/2 p-8 md:p-12 flex flex-col justify-center bg-brand-white border-l-4 border-brand-dark space-y-6">
         {product.badge && (
-          <span className="bg-brand-lime text-brand-dark font-bold uppercase text-xs px-3 py-1 border-2 border-brand-dark self-start mb-4">
+          <span className="bg-brand-lime text-brand-dark font-bold uppercase text-xs px-3 py-1 border-2 border-brand-dark self-start">
             {product.badge}
           </span>
         )}
-        <h1 className="text-4xl md:text-5xl font-black uppercase text-brand-dark mb-4">{product.name}</h1>
-        <div className="flex items-center gap-4 mb-6">
-          <div className="bg-brand-dark text-brand-lime font-black px-4 py-2 text-xl">₹{product.price}</div>
-          <div className="flex items-center text-brand-dark font-bold">
-            <span className="text-xl mr-1">★</span> {product.rating} ({product.reviews} reviews)
+        
+        <div>
+          <h1 className="text-4xl md:text-5xl font-black uppercase text-brand-dark mb-2">{product.name}</h1>
+          <div className="flex items-center gap-4">
+            <div className="bg-brand-dark text-brand-lime font-black px-4 py-2 text-xl">{displayPrice}</div>
+            <div className="flex items-center text-brand-dark font-bold">
+              <span className="text-xl mr-1">★</span> {product.rating} ({product.reviews} reviews)
+            </div>
           </div>
         </div>
-        <p className="text-lg text-brand-dark font-medium mb-8">{product.description}</p>
-        <button className="px-8 py-4 bg-brand-lime text-brand-dark font-black uppercase tracking-widest border-4 border-brand-dark shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-transform hover:-translate-y-1 hover:translate-x-1 hover:shadow-[0px_0px_0px_0px_rgba(17,17,17,1)] w-full text-center">
-          Check Latest Price
-        </button>
+
+        <p className="text-base text-brand-dark font-medium leading-relaxed">{product.description}</p>
+        
+        {/* Main CTA Buy Button */}
+        {bestMerchant ? (
+          <BuyButton 
+            merchantSlug={bestMerchantSlug}
+            productSlug={product.slug}
+            text={buttonText}
+            primary={true}
+          />
+        ) : (
+          <a 
+            href="#"
+            className="px-8 py-4 bg-brand-lime text-brand-dark font-black uppercase tracking-widest border-4 border-brand-dark shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-transform hover:-translate-y-1 hover:translate-x-1 hover:shadow-[0px_0px_0px_0px_rgba(17,17,17,1)] w-full text-center block"
+          >
+            {buttonText}
+          </a>
+        )}
+
+        {/* Other Sellers Comparison Table */}
+        {otherMerchants.length > 0 && (
+          <div className="pt-4">
+            <MerchantComparison merchants={otherMerchants} productSlug={product.slug} />
+          </div>
+        )}
       </div>
     </div>
   );
