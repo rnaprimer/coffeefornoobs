@@ -4,6 +4,7 @@ import PageHeader from '../../../components/shared/PageHeader';
 import GuideHero from '../../../components/guides/GuideHero';
 import GuideGrid from '../../../components/guides/GuideGrid';
 import { getGuides } from '../../../lib/queries/guides';
+import { BookOpen, Coffee, Droplets, Info } from 'lucide-react';
 
 export default async function GuidesPage() {
   const guides = await getGuides();
@@ -14,28 +15,43 @@ export default async function GuidesPage() {
     <div className="min-h-screen bg-brand-white pb-20">
       <PageHeader 
         title="Coffee Guides" 
-        description="Learn everything from basic brewing to advanced espresso theory." 
+        description="Step-by-step brewing guides, explainers and tips for beginners." 
+        illustrationSrc="https://api.dicebear.com/9.x/notionists/svg?seed=Reader&backgroundColor=f7d8e5"
       />
-      <Container>
-        {featuredGuide && <GuideHero guide={featuredGuide} />}
-        
-        <div className="mb-8">
-          <h2 className="text-3xl font-black uppercase text-brand-dark mb-8">All Guides</h2>
-          <div className="flex flex-wrap gap-4 items-center mb-8">
-            <span className="font-bold text-brand-dark">Categories:</span>
-            <button className="px-4 py-2 font-bold uppercase bg-brand-pink border-2 border-brand-dark shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
-              All
+      
+      {/* Category Navigation Bar */}
+      <div className="border-b border-brand-dark bg-white">
+        <Container className="py-4">
+          <div className="flex items-center gap-8 overflow-x-auto no-scrollbar">
+            <button className="flex items-center gap-2 group px-4 py-2 bg-brand-lime border border-brand-dark rounded-full shrink-0">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-brand-dark">All Guides</span>
             </button>
-            <button className="px-4 py-2 font-bold uppercase bg-brand-white border-2 border-brand-dark shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
-              Brewing
+            <button className="flex items-center gap-2 group px-4 py-2 opacity-70 hover:opacity-100 transition-opacity shrink-0">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-brand-dark">Brewing Guides</span>
             </button>
-            <button className="px-4 py-2 font-bold uppercase bg-brand-white border-2 border-brand-dark shadow-[4px_4px_0px_0px_rgba(17,17,17,1)]">
-              Equipment
+            <button className="flex items-center gap-2 group px-4 py-2 opacity-70 hover:opacity-100 transition-opacity shrink-0">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-brand-dark">Coffee Basics</span>
+            </button>
+            <button className="flex items-center gap-2 group px-4 py-2 opacity-70 hover:opacity-100 transition-opacity shrink-0">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-brand-dark">Tips & Tricks</span>
+            </button>
+            <button className="flex items-center gap-2 group px-4 py-2 opacity-70 hover:opacity-100 transition-opacity shrink-0">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-brand-dark">Explainers</span>
             </button>
           </div>
-        </div>
+        </Container>
+      </div>
 
+      <Container className="mt-12">
+        {featuredGuide && <GuideHero guide={featuredGuide} />}
+        
         <GuideGrid guides={remainingGuides.length > 0 ? remainingGuides : guides} />
+        
+        <div className="mt-16 flex justify-center">
+          <button className="px-8 py-3 bg-brand-lime text-brand-dark font-bold uppercase tracking-wider rounded-full hover:bg-yellow-400 transition-colors border border-brand-dark">
+            Load More Guides
+          </button>
+        </div>
       </Container>
     </div>
   );

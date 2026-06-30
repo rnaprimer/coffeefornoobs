@@ -16,16 +16,16 @@ interface ProductCardProps {
 
 export default function ProductCard({ name, price, rating, reviews, badge, imageUrl, imageText, slug }: ProductCardProps) {
   const content = (
-    <div className="bg-brand-white border border-brand-dark rounded-xl p-3 flex flex-col transition-all cursor-pointer group h-full">
+    <div className="bg-white border border-gray-200 rounded-lg p-5 flex flex-col transition-all cursor-pointer group h-full hover:shadow-sm">
       
-      <div className="bg-gray-50 rounded-lg h-48 w-full relative flex items-center justify-center mb-4 overflow-hidden">
+      <div className="bg-white h-48 w-full relative flex items-center justify-center mb-6 overflow-hidden">
         {imageUrl ? (
-          <Image src={imageUrl} alt={name} fill className="object-cover" />
+          <Image src={imageUrl} alt={name} fill className="object-contain group-hover:scale-105 transition-transform duration-300" />
         ) : (
           <span className="font-bold text-gray-400 text-xl">{imageText}</span>
         )}
         {badge && (
-          <div className="absolute top-2 left-2 z-10 bg-brand-lime text-brand-dark text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-full border border-brand-dark">
+          <div className="absolute top-0 left-0 z-10 bg-brand-lime text-brand-dark text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-sm border border-brand-dark">
             {badge}
           </div>
         )}
@@ -33,21 +33,21 @@ export default function ProductCard({ name, price, rating, reviews, badge, image
 
       <div className="flex flex-col flex-1 justify-between">
         <div>
-          <h3 className="font-bold text-sm leading-snug mb-1 group-hover:underline decoration-2 underline-offset-2">{name}</h3>
-          <div className="flex items-center text-xs font-bold mb-4">
-            <div className="flex text-brand-lime mr-1">
+          <h3 className="font-bold text-[15px] leading-snug mb-2 group-hover:text-brand-lime transition-colors">{name}</h3>
+          <p className="font-black text-lg mb-4">₹{price.toLocaleString('en-IN')}</p>
+        </div>
+
+        <div className="flex items-center justify-between border-t border-gray-100 pt-4 mt-2">
+          <div className="flex items-center text-xs font-bold text-gray-500">
+            <div className="flex text-yellow-400 mr-1">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} size={10} fill="currentColor" />
+                <Star key={i} size={12} fill={i < Math.floor(rating) ? "currentColor" : "transparent"} stroke={i < Math.floor(rating) ? "currentColor" : "#CBD5E1"} />
               ))}
             </div>
             <span>{rating} ({reviews})</span>
           </div>
-        </div>
-
-        <div className="flex items-end justify-between mt-2">
-          <p className="font-black text-lg">₹{price.toLocaleString('en-IN')}</p>
-          <button className="w-8 h-8 rounded-full border border-brand-dark flex items-center justify-center group-hover:bg-brand-lime transition-colors">
-            <Plus size={16} />
+          <button className="w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:border-brand-dark hover:text-brand-dark transition-colors">
+            <Plus size={14} />
           </button>
         </div>
       </div>

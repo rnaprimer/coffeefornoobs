@@ -9,25 +9,25 @@ interface GuideHeroProps {
 
 export default function GuideHero({ guide }: GuideHeroProps) {
   return (
-    <div className="mb-16 border-4 border-brand-dark overflow-hidden bg-brand-lime shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] flex flex-col md:flex-row">
-      <div className="md:w-1/2 bg-brand-dark p-8 md:p-12 flex items-center justify-center relative min-h-[250px]">
-        {guide.coverImageUrl ? (
-          <Image src={guide.coverImageUrl} alt={guide.title} fill className="object-cover opacity-80" />
-        ) : (
-          <span className="text-brand-white font-black text-3xl uppercase tracking-widest relative z-10">{guide.coverImageText}</span>
-        )}
-      </div>
-      <div className="md:w-1/2 p-8 md:p-12 flex flex-col justify-center bg-brand-white">
-        <div className="uppercase font-bold text-sm mb-4 bg-brand-pink text-brand-dark inline-block px-3 py-1 border-2 border-brand-dark self-start">Featured Guide</div>
-        <h2 className="text-3xl md:text-5xl font-black uppercase text-brand-dark mb-4 leading-tight">
+    <div className="mb-16 border border-gray-200 overflow-hidden bg-brand-pink rounded-xl flex flex-col md:flex-row">
+      <div className="md:w-1/2 p-8 md:p-16 flex flex-col justify-center">
+        <div className="uppercase font-bold text-[10px] tracking-widest mb-6 bg-brand-lime text-brand-dark inline-block px-3 py-1 border border-brand-dark self-start rounded-full">Featured Guide</div>
+        <h2 className="text-4xl md:text-5xl font-black uppercase text-brand-dark mb-4 leading-[1.1] tracking-tighter">
           {guide.title}
         </h2>
-        <p className="text-lg text-brand-dark mb-6 font-medium">
+        <p className="text-lg text-brand-dark mb-8 font-medium">
           {guide.content.substring(0, 100)}...
         </p>
-        <Link href={`/guides/${guide.slug}`} className="self-start px-6 py-3 bg-brand-lime text-brand-dark font-bold uppercase tracking-wide border-2 border-brand-dark shadow-[4px_4px_0px_0px_rgba(17,17,17,1)] transition-transform hover:-translate-y-1 hover:translate-x-1 hover:shadow-[0px_0px_0px_0px_rgba(17,17,17,1)]">
+        <Link href={`/guides/${guide.slug}`} className="self-start px-8 py-3 bg-brand-lime text-brand-dark font-bold uppercase tracking-wider rounded-full hover:bg-yellow-400 transition-colors">
           Read Guide
         </Link>
+      </div>
+      <div className="md:w-1/2 bg-brand-pink p-8 md:p-12 flex items-center justify-center relative min-h-[300px]">
+        {guide.coverImageUrl ? (
+          <Image src={guide.coverImageUrl} alt={guide.title} fill className="object-contain p-8" />
+        ) : (
+          <img src="https://api.dicebear.com/9.x/notionists/svg?seed=Reading&backgroundColor=f7d8e5" alt="Illustration" className="w-full h-full object-contain" />
+        )}
       </div>
     </div>
   );
