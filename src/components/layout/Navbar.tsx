@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Search, ShoppingCart } from 'lucide-react';
+import { Search } from 'lucide-react';
 import Container from './Container';
 import GlobalSearch from '@/components/search/GlobalSearch';
 
@@ -23,9 +23,8 @@ export default function Navbar() {
 
         <div className="flex items-center space-x-4">
           <GlobalSearch />
-          <button className="flex items-center font-bold text-sm bg-brand-lime border border-brand-dark rounded-full px-4 py-1.5 hover:bg-yellow-400 transition-colors">
-            <ShoppingCart size={16} className="mr-2" />
-            CART <span className="ml-2 px-2 py-0.5 bg-brand-dark text-brand-white rounded-full text-[10px]">2</span>
+          <button className="flex items-center justify-center w-10 h-10 bg-brand-lime border border-brand-dark rounded-full hover:bg-yellow-400 transition-colors overflow-hidden shrink-0">
+            <img src="https://api.dicebear.com/9.x/notionists/svg?seed=Felix" alt="Profile" className="w-8 h-8 object-contain" />
           </button>
         </div>
       </Container>
