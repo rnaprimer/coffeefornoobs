@@ -18,7 +18,7 @@ export default function ProductCard({ name, price, rating, reviews, badge, image
   const content = (
     <div className="bg-white border border-gray-200 rounded-lg p-5 flex flex-col transition-all cursor-pointer group h-full hover:shadow-sm">
       
-      <div className="bg-white h-48 w-full relative flex items-center justify-center mb-6 overflow-hidden">
+      <div className="bg-gray-50 rounded-md h-48 w-full relative flex items-center justify-center mb-6 overflow-hidden">
         {imageUrl ? (
           <Image src={imageUrl} alt={name} fill className="object-contain group-hover:scale-105 transition-transform duration-300" />
         ) : (
@@ -33,7 +33,7 @@ export default function ProductCard({ name, price, rating, reviews, badge, image
 
       <div className="flex flex-col flex-1 justify-between">
         <div>
-          <h3 className="font-bold text-[15px] leading-snug mb-2 group-hover:text-brand-lime transition-colors">{name}</h3>
+          <h3 className="font-bold text-[15px] leading-snug mb-2 group-hover:underline decoration-2 underline-offset-2 transition-all">{name}</h3>
           <p className="font-black text-lg mb-4">₹{price.toLocaleString('en-IN')}</p>
         </div>
 
