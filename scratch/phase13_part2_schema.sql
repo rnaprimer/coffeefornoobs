@@ -3,7 +3,7 @@
 
 -- 1. Create user_wishlist table
 CREATE TABLE public.user_wishlist (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
     entity_type TEXT NOT NULL CHECK (entity_type IN ('product', 'bean', 'guide', 'comparison', 'learn_article')),
     entity_id UUID NOT NULL, -- references whatever entity_type is, but no foreign key to allow generic relations
@@ -30,7 +30,7 @@ CREATE POLICY "Users can delete from their own wishlist"
 
 -- 2. Create saved_setups table
 CREATE TABLE public.saved_setups (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
     title TEXT NOT NULL,
     budget NUMERIC,
@@ -44,6 +44,8 @@ CREATE TABLE public.saved_setups (
 );
 
 -- Trigger for updated_at
+CREATE EXTENSION IF NOT EXISTS moddatetime schema extensions;
+
 CREATE TRIGGER handle_updated_at BEFORE UPDATE ON public.saved_setups
   FOR EACH ROW EXECUTE PROCEDURE moddatetime (updated_at);
 
