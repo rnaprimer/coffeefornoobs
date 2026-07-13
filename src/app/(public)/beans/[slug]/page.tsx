@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Metadata } from 'next';
 import { constructMetadata } from '../../../../lib/seo';
+import { WishlistButton } from '@/components/wishlist/WishlistButton';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -52,7 +53,10 @@ export default async function BeanDetailPage({ params }: { params: Promise<{ slu
             )}
           </div>
           <div className="md:w-1/2 p-8 md:p-12 flex flex-col justify-center bg-brand-white border-l-4 border-brand-dark">
-            <h1 className="text-4xl md:text-5xl font-black uppercase text-brand-dark mb-2">{bean.name}</h1>
+            <div className="flex items-start justify-between gap-4 mb-2">
+              <h1 className="text-4xl md:text-5xl font-black uppercase text-brand-dark">{bean.name}</h1>
+              <WishlistButton entityType="bean" entityId={bean.id} />
+            </div>
             <p className="text-2xl font-bold text-brand-dark mb-6">by {bean.brand}</p>
             <div className="bg-brand-dark text-brand-pink font-black px-4 py-2 text-xl inline-block self-start mb-8">₹{bean.price}</div>
             

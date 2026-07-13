@@ -537,6 +537,70 @@ export interface Database {
           updated_at?: string
         }
       }
+      user_wishlist: {
+        Row: {
+          id: string
+          user_id: string
+          entity_type: string
+          entity_id: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          entity_type: string
+          entity_id: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          entity_type?: string
+          entity_id?: string
+          created_at?: string
+        }
+      }
+      saved_setups: {
+        Row: {
+          id: string
+          user_id: string
+          title: string
+          budget: number | null
+          setup_configuration: Json
+          notes: string | null
+          thumbnail_media_id: string | null
+          favorite: boolean
+          last_opened_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          title: string
+          budget?: number | null
+          setup_configuration: Json
+          notes?: string | null
+          thumbnail_media_id?: string | null
+          favorite?: boolean
+          last_opened_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          title?: string
+          budget?: number | null
+          setup_configuration?: Json
+          notes?: string | null
+          thumbnail_media_id?: string | null
+          favorite?: boolean
+          last_opened_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
     }
   }
 }

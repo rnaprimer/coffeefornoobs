@@ -3,7 +3,10 @@ import { Plus, Star } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 
+import { WishlistButton } from '@/components/wishlist/WishlistButton';
+
 interface ProductCardProps {
+  id: string;
   name: string;
   price: number;
   rating: number;
@@ -14,9 +17,9 @@ interface ProductCardProps {
   slug?: string;
 }
 
-export default function ProductCard({ name, price, rating, reviews, badge, imageUrl, imageText, slug }: ProductCardProps) {
+export default function ProductCard({ id, name, price, rating, reviews, badge, imageUrl, imageText, slug }: ProductCardProps) {
   const content = (
-    <div className="bg-white border border-gray-200 rounded-lg p-5 flex flex-col transition-all cursor-pointer group h-full hover:shadow-sm">
+    <div className="bg-white border border-gray-200 rounded-lg p-5 flex flex-col transition-all cursor-pointer group h-full hover:shadow-sm relative">
       
       <div className="bg-gray-50 rounded-md h-48 w-full relative flex items-center justify-center mb-6 overflow-hidden">
         {imageUrl ? (
@@ -29,6 +32,9 @@ export default function ProductCard({ name, price, rating, reviews, badge, image
             {badge}
           </div>
         )}
+        <div className="absolute top-2 right-2 z-20">
+          <WishlistButton entityType="product" entityId={id} />
+        </div>
       </div>
 
       <div className="flex flex-col flex-1 justify-between">

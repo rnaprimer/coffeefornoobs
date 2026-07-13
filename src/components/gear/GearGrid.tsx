@@ -12,6 +12,7 @@ export default function GearGrid({ products }: GearGridProps) {
       {products.map((product) => (
         <ProductCard
           key={product.id}
+          id={product.id}
           slug={product.slug}
           name={product.name}
           price={product.price}

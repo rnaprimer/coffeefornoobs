@@ -19,10 +19,10 @@ export function DashboardSidebar({ isOpen, setIsOpen }: DashboardSidebarProps) {
   };
 
   const navItems = [
-    { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-    { name: 'Wishlist', href: '#', icon: Heart, disabled: true },
-    { name: 'Saved Setups', href: '#', icon: Bookmark, disabled: true },
-    { name: 'Settings', href: '/dashboard/settings', icon: Settings },
+    { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
+    { name: 'Wishlist', href: '/dashboard/wishlist', icon: Heart },
+    { name: 'Saved Setups', href: '/dashboard/setups', icon: Bookmark },
+    { name: 'Account Settings', href: '/dashboard/settings', icon: Settings },
   ];
 
   return (
@@ -58,7 +58,7 @@ export function DashboardSidebar({ isOpen, setIsOpen }: DashboardSidebarProps) {
               const Icon = item.icon;
               const isActive = pathname === item.href;
 
-              if (item.disabled) {
+              if ((item as any).disabled) {
                 return (
                   <div key={item.name} className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-slate-400 cursor-not-allowed group">
                     <Icon size={20} className="mr-3 flex-shrink-0 text-slate-300" />

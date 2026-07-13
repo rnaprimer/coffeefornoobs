@@ -3,6 +3,7 @@ import { Product } from '../../types/product';
 import Image from 'next/image';
 import { getBestMerchant, getMerchantOptions, formatPrice } from '../../lib/affiliate';
 import { MerchantComparison, BuyButton } from '../affiliate';
+import { WishlistButton } from '@/components/wishlist/WishlistButton';
 
 interface ProductHeroProps {
   product: Product;
@@ -44,7 +45,10 @@ export default function ProductHero({ product, productMerchants = [] }: ProductH
         )}
         
         <div>
-          <h1 className="text-4xl md:text-5xl font-black uppercase text-brand-dark mb-2">{product.name}</h1>
+          <div className="flex items-start justify-between gap-4 mb-2">
+            <h1 className="text-4xl md:text-5xl font-black uppercase text-brand-dark">{product.name}</h1>
+            <WishlistButton entityType="product" entityId={product.id} />
+          </div>
           <div className="flex items-center gap-4">
             <div className="bg-brand-dark text-brand-lime font-black px-4 py-2 text-xl">{displayPrice}</div>
             <div className="flex items-center text-brand-dark font-bold">

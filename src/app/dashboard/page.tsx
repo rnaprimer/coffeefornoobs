@@ -1,55 +1,100 @@
-import React from 'react';
-import { requirePreferences } from '@/lib/auth/helpers';
-import { DashboardWelcome } from '@/components/dashboard/DashboardWelcome';
-import { ProfileCompletionWidget } from '@/components/dashboard/ProfileCompletionWidget';
+import { Metadata } from 'next';
+import { requireProfile, requirePreferences } from '@/lib/auth/helpers';
+import { getWishlistCount, getWishlistProducts, getWishlistBeans } from '@/lib/queries/wishlist';
+import { getSavedSetups, getRecentSetup } from '@/lib/queries/setup';
+
+import { DashboardStats } from '@/components/dashboard/DashboardStats';
+import { QuickActions } from '@/components/dashboard/QuickActions';
+import { WishlistGrid } from '@/components/wishlist/WishlistGrid';
+import { SavedSetupCard } from '@/components/setup/SavedSetupCard';
+import { EmptyDashboard } from '@/components/dashboard/EmptyDashboard';
+import Link from 'next/link';
+
+export const metadata: Metadata = {
+  title: 'Dashboard | CoffeeForNoobs',
+  description: 'Manage your coffee profile and preferences.',
+};
 
 export default async function DashboardPage() {
-  const { user, profile: _profile, preferences: _preferences } = await requirePreferences();
-  const preferences = _preferences as any;
-  const profile = _profile as any;
+  const [
+    { user, profile: userProfile }, 
+    preferences, 
+    totalWishlistCount, 
+    wishlistProducts, 
+    wishlistBeans, 
+    savedSetups, 
+    recentSetup
+  ] = await Promise.all([
+    requireProfile(),
+    requirePreferences(),
+    getWishlistCount(),
+    getWishlistProducts(),
+    getWishlistBeans(),
+    getSavedSetups(),
+    getRecentSetup()
+  ]);
+
+  const recentWishlistItems = [...wishlistProducts, ...wishlistBeans]
+    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    .slice(0, 4);
+
+  const hasActivity = totalWishlistCount > 0 || savedSetups.length > 0;
 
   return (
-    <div className="space-y-6">
-      <DashboardWelcome user={user} profile={profile} />
-      
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-2 space-y-6">
-          {/* Quick Stats or Overview */}
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-            <h3 className="text-lg font-semibold text-slate-900 mb-4">Coffee Profile</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="p-4 bg-slate-50 rounded-lg border border-slate-100">
-                <p className="text-sm text-slate-500 mb-1">Experience Level</p>
-                <p className="font-medium text-slate-900">{preferences?.experience_level || 'Not set'}</p>
-              </div>
-              <div className="p-4 bg-slate-50 rounded-lg border border-slate-100">
-                <p className="text-sm text-slate-500 mb-1">Preferred Brew</p>
-                <p className="font-medium text-slate-900">{preferences?.preferred_brew_method || 'Not set'}</p>
-              </div>
-              <div className="p-4 bg-slate-50 rounded-lg border border-slate-100">
-                <p className="text-sm text-slate-500 mb-1">Budget Range</p>
-                <p className="font-medium text-slate-900">{preferences?.budget_range || 'Not set'}</p>
-              </div>
-              <div className="p-4 bg-slate-50 rounded-lg border border-slate-100">
-                <p className="text-sm text-slate-500 mb-1">Roast Level</p>
-                <p className="font-medium text-slate-900">{preferences?.preferred_roast_level || 'Not set'}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div className="space-y-6">
-          <ProfileCompletionWidget profile={profile} preferences={preferences} />
-          
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-            <h3 className="text-sm font-medium text-slate-500 uppercase tracking-wider mb-2">Account Info</h3>
-            <div className="space-y-2 text-sm">
-              <p><span className="text-slate-500">Email:</span> <span className="font-medium">{user.email}</span></p>
-              <p><span className="text-slate-500">Last Login:</span> <span className="font-medium">{new Date(profile.last_login_at || Date.now()).toLocaleDateString()}</span></p>
-            </div>
-          </div>
-        </div>
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-black uppercase text-neutral-900">
+          Welcome back, {(userProfile as any)?.full_name?.split(' ')[0] || (userProfile as any)?.display_name || 'Coffee Lover'}!
+        </h1>
+        <p className="mt-2 text-neutral-600">Here's what's happening with your coffee journey.</p>
       </div>
+
+      {hasActivity ? (
+        <>
+          <DashboardStats 
+            totalWishlistCount={totalWishlistCount}
+            wishlistProductsCount={wishlistProducts.length}
+            wishlistBeansCount={wishlistBeans.length}
+            savedSetupsCount={savedSetups.length}
+          />
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2 space-y-8">
+              {/* Recent Saved Setup */}
+              {recentSetup && (
+                <section>
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-bold text-neutral-900">Recent Setup</h2>
+                    <Link href="/dashboard/setups" className="text-sm font-medium text-amber-600 hover:text-amber-700">
+                      View All
+                    </Link>
+                  </div>
+                  <SavedSetupCard setup={recentSetup} />
+                </section>
+              )}
+
+              {/* Recent Wishlist Items */}
+              {recentWishlistItems.length > 0 && (
+                <section>
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-bold text-neutral-900">Recently Saved</h2>
+                    <Link href="/dashboard/wishlist" className="text-sm font-medium text-amber-600 hover:text-amber-700">
+                      View All
+                    </Link>
+                  </div>
+                  <WishlistGrid items={recentWishlistItems} />
+                </section>
+              )}
+            </div>
+
+            <div className="space-y-8">
+              <QuickActions recentSetupId={recentSetup?.id} />
+            </div>
+          </div>
+        </>
+      ) : (
+        <EmptyDashboard />
+      )}
     </div>
   );
 }

@@ -3,7 +3,10 @@ import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 
+import { WishlistButton } from '@/components/wishlist/WishlistButton';
+
 interface BeanCardProps {
+  id: string;
   brand: string;
   name: string;
   price: number;
@@ -14,9 +17,12 @@ interface BeanCardProps {
   tastingNotes?: string[];
 }
 
-export default function BeanCard({ brand, name, price, slug, imageUrl }: BeanCardProps) {
+export default function BeanCard({ id, brand, name, price, slug, imageUrl }: BeanCardProps) {
   const content = (
-    <div className="flex items-center group cursor-pointer bg-white border border-transparent hover:border-gray-200 hover:shadow-sm p-3 transition-all rounded-lg">
+    <div className="flex items-center group cursor-pointer bg-white border border-transparent hover:border-gray-200 hover:shadow-sm p-3 transition-all rounded-lg relative">
+      <div className="absolute top-2 right-2 z-20">
+        <WishlistButton entityType="bean" entityId={id} />
+      </div>
       <div className="w-16 h-16 bg-gray-50 rounded-md flex flex-col items-center justify-center shrink-0 relative overflow-hidden">
         {imageUrl ? (
           <Image src={imageUrl} alt={name} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />

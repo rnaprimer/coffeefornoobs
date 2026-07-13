@@ -1,6 +1,7 @@
 import React from 'react';
 import Container from '../../../components/layout/Container';
 import PageHeader from '../../../components/shared/PageHeader';
+import { SaveSetupButton } from '@/components/setup/SaveSetupButton';
 
 export default function SetupBuilderPage() {
   return (
@@ -34,13 +35,24 @@ export default function SetupBuilderPage() {
             </button>
           </div>
 
-          <div className="mt-12 flex justify-end">
-            <button className="px-8 py-3 bg-brand-dark text-brand-white font-bold uppercase tracking-wide border-2 border-brand-dark hover:bg-brand-pink hover:text-brand-dark transition-colors">
-              Next Step &rarr;
-            </button>
+            <div className="mt-12 flex justify-between items-center">
+              <SaveSetupButton 
+                setupConfiguration={{
+                  brewer: 'aeropress',
+                  grinder: 'timemore-c2',
+                  bean: 'onyx-monarch',
+                  scale: 'hario-v60-scale',
+                  kettle: 'stagg-ekg'
+                }}
+                budget={15000}
+                className="bg-transparent border-2 border-brand-dark text-brand-dark hover:bg-brand-dark hover:text-brand-white"
+              />
+              <button className="px-8 py-3 bg-brand-dark text-brand-white font-bold uppercase tracking-wide border-2 border-brand-dark hover:bg-brand-pink hover:text-brand-dark transition-colors">
+                Next Step &rarr;
+              </button>
+            </div>
           </div>
-        </div>
-      </Container>
-    </div>
-  );
-}
+        </Container>
+      </div>
+    );
+  }

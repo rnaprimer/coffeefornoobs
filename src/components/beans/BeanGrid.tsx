@@ -12,6 +12,7 @@ export default function BeanGrid({ beans }: BeanGridProps) {
       {beans.map((bean) => (
         <BeanCard
           key={bean.id}
+          id={bean.id}
           slug={bean.slug}
           name={bean.name}
           brand={bean.brand}
