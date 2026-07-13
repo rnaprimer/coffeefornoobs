@@ -1,10 +1,25 @@
 import React from 'react';
 import Link from 'next/link';
-import { Search } from 'lucide-react';
+import { Search, LogIn } from 'lucide-react';
 import Container from './Container';
 import GlobalSearch from '@/components/search/GlobalSearch';
+import { createClient } from '@/lib/supabase/server';
+import { UserDropdown } from '@/components/shared/UserDropdown';
 
-export default function Navbar() {
+export default async function Navbar() {
+  const supabase = await createClient();
+  let user = null;
+  let profile = null;
+
+  if (supabase) {
+    const { data } = await supabase.auth.getUser();
+    user = data.user;
+    if (user) {
+      const { data: profileData } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+      profile = profileData as any;
+    }
+  }
+
   return (
     <nav className="w-full bg-brand-white brutal-border-b h-16 flex items-center sticky top-0 z-50">
       <Container className="w-full flex items-center justify-between">
@@ -23,9 +38,17 @@ export default function Navbar() {
 
         <div className="flex items-center space-x-4">
           <GlobalSearch />
-          <button className="flex items-center justify-center w-10 h-10 bg-brand-lime border border-brand-dark rounded-full hover:bg-yellow-400 transition-colors overflow-hidden shrink-0">
-            <img src="https://api.dicebear.com/9.x/notionists/svg?seed=Felix" alt="Profile" className="w-8 h-8 object-contain" />
-          </button>
+          {user ? (
+            <UserDropdown user={user} profile={profile} />
+          ) : (
+            <Link 
+              href="/login"
+              className="flex items-center justify-center px-4 h-10 bg-brand-lime border border-brand-dark rounded-full hover:bg-yellow-400 transition-colors shrink-0 font-bold text-sm uppercase tracking-wider"
+            >
+              <LogIn size={16} className="mr-2" />
+              Login
+            </Link>
+          )}
         </div>
       </Container>
     </nav>

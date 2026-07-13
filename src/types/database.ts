@@ -461,6 +461,82 @@ export interface Database {
           updated_at?: string
         }
       }
+      profiles: {
+        Row: {
+          id: string
+          email: string
+          full_name: string | null
+          display_name: string | null
+          avatar_url: string | null
+          avatar_media_id: string | null
+          provider: string | null
+          role: string | null
+          last_login_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          email: string
+          full_name?: string | null
+          display_name?: string | null
+          avatar_url?: string | null
+          avatar_media_id?: string | null
+          provider?: string | null
+          role?: string | null
+          last_login_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          email?: string
+          full_name?: string | null
+          display_name?: string | null
+          avatar_url?: string | null
+          avatar_media_id?: string | null
+          provider?: string | null
+          role?: string | null
+          last_login_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      user_preferences: {
+        Row: {
+          id: string
+          user_id: string
+          experience_level: string | null
+          preferred_brew_method: string | null
+          budget_range: string | null
+          preferred_roast_level: string | null
+          preferred_currency: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          experience_level?: string | null
+          preferred_brew_method?: string | null
+          budget_range?: string | null
+          preferred_roast_level?: string | null
+          preferred_currency?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          experience_level?: string | null
+          preferred_brew_method?: string | null
+          budget_range?: string | null
+          preferred_roast_level?: string | null
+          preferred_currency?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
     }
   }
 }

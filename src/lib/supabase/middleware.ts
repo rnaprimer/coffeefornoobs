@@ -40,19 +40,34 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const isAdminRoute = request.nextUrl.pathname.startsWith('/admin');
-  const isLoginRoute = request.nextUrl.pathname === '/admin/login';
+  const isAdminLoginRoute = request.nextUrl.pathname === '/admin/login';
+  
+  const isDashboardRoute = request.nextUrl.pathname.startsWith('/dashboard');
+  const isPublicLoginRoute = request.nextUrl.pathname === '/login';
 
-  if (isAdminRoute && !isLoginRoute && !user) {
-    // If accessing admin routes without a user, redirect to login
+  // Admin routing logic
+  if (isAdminRoute && !isAdminLoginRoute && !user) {
     const url = request.nextUrl.clone();
     url.pathname = '/admin/login';
     return NextResponse.redirect(url);
   }
 
-  if (isLoginRoute && user) {
-    // If accessing login page with a user, redirect to dashboard
+  if (isAdminLoginRoute && user) {
     const url = request.nextUrl.clone();
     url.pathname = '/admin';
+    return NextResponse.redirect(url);
+  }
+
+  // Public dashboard routing logic
+  if (isDashboardRoute && !user) {
+    const url = request.nextUrl.clone();
+    url.pathname = '/login';
+    return NextResponse.redirect(url);
+  }
+
+  if (isPublicLoginRoute && user) {
+    const url = request.nextUrl.clone();
+    url.pathname = '/dashboard';
     return NextResponse.redirect(url);
   }
 
