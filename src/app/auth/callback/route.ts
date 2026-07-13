@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
+import { redirect } from 'next/navigation';
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -51,16 +52,21 @@ export async function GET(request: Request) {
       const forwardedHost = request.headers.get('x-forwarded-host'); // original origin before load balancer
       const isLocalEnv = process.env.NODE_ENV === 'development';
       
+      // Ensure Next.js clears the router cache for the user's session
+      // @ts-ignore
+      const { revalidatePath } = require('next/cache');
+      revalidatePath('/', 'layout');
+
       if (isLocalEnv) {
-        return NextResponse.redirect(`${origin}${next}`);
+        redirect(`${next}`); // Redirect handles the local path seamlessly
       } else if (forwardedHost) {
-        return NextResponse.redirect(`https://${forwardedHost}${next}`);
+        redirect(`https://${forwardedHost}${next}`);
       } else {
-        return NextResponse.redirect(`${origin}${next}`);
+        redirect(`${origin}${next}`);
       }
     }
   }
 
   // return the user to an error page with instructions
-  return NextResponse.redirect(`${origin}/login?error=Could not authenticate user`);
+  redirect(`/login?error=Could not authenticate user`);
 }
