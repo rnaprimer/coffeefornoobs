@@ -1,24 +1,53 @@
-import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
-import { redirect } from 'next/navigation';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get('code');
-  // if "next" is in param, use it as the redirect URL
   const next = searchParams.get('next') ?? '/dashboard';
 
   if (code) {
-    const supabase = await createClient();
-    if (!supabase) {
-      return NextResponse.redirect(`${origin}/login?error=SupabaseNotConfigured`);
+    const cookieStore = await cookies();
+    const forwardedHost = request.headers.get('x-forwarded-host');
+    const isLocalEnv = process.env.NODE_ENV === 'development';
+    
+    let redirectUrl = `${origin}${next}`;
+    if (!isLocalEnv && forwardedHost) {
+      redirectUrl = `https://${forwardedHost}${next}`;
     }
+
+    const response = NextResponse.redirect(redirectUrl);
+
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return cookieStore.getAll();
+          },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value, options }) => {
+              // Set on the request so the rest of the handler sees it
+              cookieStore.set(name, value, options);
+              // Explicitly set on the response we're about to return
+              response.cookies.set({
+                name,
+                value,
+                ...options,
+              });
+            });
+          },
+        },
+      }
+    );
+
     const { error, data: { session } } = await supabase.auth.exchangeCodeForSession(code);
 
     if (!error && session?.user) {
       const user = session.user;
       
-      // Check if profile exists
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('*')
@@ -26,7 +55,6 @@ export async function GET(request: Request) {
         .single();
 
       if (!profile && profileError?.code === 'PGRST116') {
-        // Profile does not exist, create it
         await supabase.from('profiles').insert({
           id: user.id,
           email: user.email || '',
@@ -37,36 +65,23 @@ export async function GET(request: Request) {
           last_login_at: new Date().toISOString(),
         } as any);
 
-        // Create default user preferences
         await supabase.from('user_preferences').insert({
           user_id: user.id,
         } as any);
       } else if (profile) {
-        // Update last_login_at
         // @ts-ignore
         await supabase.from('profiles').update({
           last_login_at: new Date().toISOString(),
         }).eq('id', user.id);
       }
 
-      const forwardedHost = request.headers.get('x-forwarded-host'); // original origin before load balancer
-      const isLocalEnv = process.env.NODE_ENV === 'development';
-      
-      // Ensure Next.js clears the router cache for the user's session
       // @ts-ignore
       const { revalidatePath } = require('next/cache');
       revalidatePath('/', 'layout');
 
-      if (isLocalEnv) {
-        redirect(`${next}`); // Redirect handles the local path seamlessly
-      } else if (forwardedHost) {
-        redirect(`https://${forwardedHost}${next}`);
-      } else {
-        redirect(`${origin}${next}`);
-      }
+      return response;
     }
   }
 
-  // return the user to an error page with instructions
-  redirect(`/login?error=Could not authenticate user`);
+  return NextResponse.redirect(`${origin}/login?error=Could not authenticate user`);
 }
