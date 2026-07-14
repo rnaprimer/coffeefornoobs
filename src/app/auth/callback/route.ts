@@ -48,38 +48,49 @@ export async function GET(request: Request) {
     if (!error && session?.user) {
       const user = session.user;
       
-      // Use the admin client to bypass RLS when creating the initial profile,
-      // because the current anon client doesn't have the user's JWT yet.
-      const { createAdminClient } = require('@/lib/supabase/admin');
-      const supabaseAdmin = createAdminClient();
-      
-      if (supabaseAdmin) {
-        const { data: profile, error: profileError } = await supabaseAdmin
-          .from('profiles')
-          .select('*')
-          .eq('id', user.id)
-          .single();
-
-        if (!profile && profileError?.code === 'PGRST116') {
-          await supabaseAdmin.from('profiles').insert({
-            id: user.id,
-            email: user.email || '',
-            full_name: user.user_metadata?.full_name || null,
-            display_name: user.user_metadata?.full_name || null,
-            avatar_url: user.user_metadata?.avatar_url || null,
-            provider: 'google',
-            last_login_at: new Date().toISOString(),
-          } as any);
-
-          await supabaseAdmin.from('user_preferences').insert({
-            user_id: user.id,
-          } as any);
-        } else if (profile) {
-          // @ts-ignore
-          await supabaseAdmin.from('profiles').update({
-            last_login_at: new Date().toISOString(),
-          }).eq('id', user.id);
+      // Create a fresh client explicitly authenticated with the new user's token
+      // This ensures we satisfy RLS policies without needing the Service Role Key
+      const authedSupabase = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+          cookies: {
+            getAll() { return cookieStore.getAll() },
+            setAll() {}
+          },
+          global: {
+            headers: {
+              Authorization: `Bearer ${session.access_token}`
+            }
+          }
         }
+      );
+      
+      const { data: profile, error: profileError } = await authedSupabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (!profile && profileError?.code === 'PGRST116') {
+        await authedSupabase.from('profiles').insert({
+          id: user.id,
+          email: user.email || '',
+          full_name: user.user_metadata?.full_name || null,
+          display_name: user.user_metadata?.full_name || null,
+          avatar_url: user.user_metadata?.avatar_url || null,
+          provider: 'google',
+          last_login_at: new Date().toISOString(),
+        } as any);
+
+        await authedSupabase.from('user_preferences').insert({
+          user_id: user.id,
+        } as any);
+      } else if (profile) {
+        // @ts-ignore
+        await authedSupabase.from('profiles').update({
+          last_login_at: new Date().toISOString(),
+        }).eq('id', user.id);
       }
 
       // @ts-ignore
