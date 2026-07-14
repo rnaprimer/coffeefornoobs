@@ -43,8 +43,12 @@ export async function loginWithGoogle() {
   const supabase = await createClient()
   if (!supabase) return { error: 'Supabase is not configured' }
 
-  // The NEXT_PUBLIC_SITE_URL should be set in .env
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+  // Construct origin dynamically so it works in Vercel preview/production without env vars
+  const { headers } = require('next/headers');
+  const headersList = await headers();
+  const host = headersList.get('x-forwarded-host') || headersList.get('host');
+  const protocol = headersList.get('x-forwarded-proto') || (process.env.NODE_ENV === 'development' ? 'http' : 'https');
+  const siteUrl = `${protocol}://${host}`;
   
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
