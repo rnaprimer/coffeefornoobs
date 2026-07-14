@@ -42,10 +42,34 @@ import { getPreferences as fetchPreferences } from '@/lib/queries/preferences';
 
 export async function requireProfile() {
   const user = await requireUser();
-  const profile = await fetchProfile();
+  let profile = await fetchProfile();
 
   if (!profile) {
-    throw new Error('User profile is missing');
+    // Attempt to auto-repair missing profile for users stuck in limbo
+    // (e.g. they authenticated successfully but profile creation failed previously)
+    const supabase = await createClient();
+    if (supabase) {
+      await supabase.from('profiles').insert({
+        id: user.id,
+        email: user.email || '',
+        full_name: user.user_metadata?.full_name || null,
+        display_name: user.user_metadata?.full_name || null,
+        avatar_url: user.user_metadata?.avatar_url || null,
+        provider: 'google',
+        last_login_at: new Date().toISOString(),
+      } as any);
+
+      await supabase.from('user_preferences').insert({
+        user_id: user.id,
+      } as any);
+
+      // Re-fetch to confirm it worked
+      profile = await fetchProfile();
+    }
+
+    if (!profile) {
+      throw new Error('Your user profile is missing and could not be automatically repaired. Please clear your cookies and log in again.');
+    }
   }
 
   return { user, profile };
