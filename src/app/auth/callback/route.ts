@@ -73,7 +73,7 @@ export async function GET(request: Request) {
         .single();
 
       if (!profile && profileError?.code === 'PGRST116') {
-        await authedSupabase.from('profiles').insert({
+        const { error: insertProfileError } = await authedSupabase.from('profiles').insert({
           id: user.id,
           email: user.email || '',
           full_name: user.user_metadata?.full_name || null,
@@ -83,9 +83,17 @@ export async function GET(request: Request) {
           last_login_at: new Date().toISOString(),
         } as any);
 
-        await authedSupabase.from('user_preferences').insert({
+        if (insertProfileError) {
+          return NextResponse.redirect(`${origin}/login?error=ProfileInsertFailed_${encodeURIComponent(insertProfileError.message)}`);
+        }
+
+        const { error: insertPrefsError } = await authedSupabase.from('user_preferences').insert({
           user_id: user.id,
         } as any);
+
+        if (insertPrefsError) {
+           return NextResponse.redirect(`${origin}/login?error=PrefsInsertFailed_${encodeURIComponent(insertPrefsError.message)}`);
+        }
       } else if (profile) {
         // @ts-ignore
         await authedSupabase.from('profiles').update({
