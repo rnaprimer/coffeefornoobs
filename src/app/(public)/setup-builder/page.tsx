@@ -3,6 +3,16 @@ import Container from '../../../components/layout/Container';
 import PageHeader from '../../../components/shared/PageHeader';
 import { SaveSetupButton } from '@/components/setup/SaveSetupButton';
 
+import { constructMetadata } from "@/lib/seo";
+
+export const metadata = constructMetadata({
+  title: "Setup Builder",
+  description: "Build your perfect coffee setup.",
+  url: "https://coffeefornoobs.com/setup-builder"
+});
+
+
+
 export default function SetupBuilderPage() {
   return (
     <div className="min-h-screen bg-brand-white pb-20">

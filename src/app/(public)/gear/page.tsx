@@ -6,6 +6,16 @@ import GearGrid from '../../../components/gear/GearGrid';
 import { getProducts, getCategories } from '../../../lib/queries/products';
 import { Coffee, Cylinder, Filter, Settings, Droplets, Scale, Wrench, ChevronRight } from 'lucide-react';
 
+import { constructMetadata } from "@/lib/seo";
+
+export const metadata = constructMetadata({
+  title: "Gear",
+  description: "Discover the best coffee gear for your setup.",
+  url: "https://coffeefornoobs.com/gear"
+});
+
+
+
 export default async function GearPage() {
   const products = await getProducts();
   const categories = await getCategories();

@@ -2,6 +2,16 @@ import React from 'react';
 import Container from '../../../components/layout/Container';
 import PageHeader from '../../../components/shared/PageHeader';
 
+import { constructMetadata } from "@/lib/seo";
+
+export const metadata = constructMetadata({
+  title: "Learn",
+  description: "Learn the basics of brewing coffee.",
+  url: "https://coffeefornoobs.com/learn"
+});
+
+
+
 export default function LearnPage() {
   return (
     <div className="min-h-screen bg-brand-white pb-20">

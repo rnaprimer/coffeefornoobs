@@ -5,6 +5,16 @@ import BeanGrid from '../../../components/beans/BeanGrid';
 import { getBeans, getRoasters } from '../../../lib/queries/beans';
 import { Coffee, ChevronRight, CircleDot, Bean } from 'lucide-react';
 
+import { constructMetadata } from "@/lib/seo";
+
+export const metadata = constructMetadata({
+  title: "Beans",
+  description: "Find the best coffee beans for your taste.",
+  url: "https://coffeefornoobs.com/beans"
+});
+
+
+
 export default async function BeansPage() {
   const beans = await getBeans();
   const roasters = await getRoasters();

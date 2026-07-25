@@ -6,6 +6,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Metadata } from 'next';
 import { constructMetadata } from '../../../../lib/seo';
+import { JsonLd } from "@/components/seo/JsonLd";
+import { generateProductSchema, generateBreadcrumbSchema } from "@/lib/json-ld";
 import { WishlistButton } from '@/components/wishlist/WishlistButton';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -30,8 +32,26 @@ export default async function BeanDetailPage({ params }: { params: Promise<{ slu
     notFound();
   }
 
+  const productSchema = generateProductSchema({
+    name: bean.name,
+    description: `Origin: ${bean.origin} | Process: ${bean.process} | Roast Level: ${bean.roastLevel}`,
+    image: bean.imageUrl || undefined,
+    brand: bean.brand,
+    price: bean.price,
+    currency: "INR",
+    url: `https://coffeefornoobs.com/beans/${slug}`,
+  });
+
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: "Home", url: "https://coffeefornoobs.com/" },
+    { name: "Beans", url: "https://coffeefornoobs.com/beans" },
+    { name: bean.name, url: `https://coffeefornoobs.com/beans/${slug}` }
+  ]);
+
   return (
     <div className="min-h-screen bg-brand-white pb-20 pt-12">
+      <JsonLd data={productSchema} />
+      <JsonLd data={breadcrumbSchema} />
       <Container>
         <div className="mb-8 text-brand-dark font-bold uppercase text-sm">
           <Link href="/" className="hover:underline">Home</Link>

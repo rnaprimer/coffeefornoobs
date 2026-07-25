@@ -6,6 +6,16 @@ import GuideGrid from '../../../components/guides/GuideGrid';
 import { getGuides } from '../../../lib/queries/guides';
 import { BookOpen, Coffee, Droplets, Info } from 'lucide-react';
 
+import { constructMetadata } from "@/lib/seo";
+
+export const metadata = constructMetadata({
+  title: "Guides",
+  description: "Read our comprehensive coffee guides.",
+  url: "https://coffeefornoobs.com/guides"
+});
+
+
+
 export default async function GuidesPage() {
   const guides = await getGuides();
   const featuredGuide = guides.find(g => g.slug === 'how-to-make-coffee-in-a-french-press') || guides[0];

@@ -4,6 +4,16 @@ import PageHeader from '../../../components/shared/PageHeader';
 import ComparisonGrid from '../../../components/comparisons/ComparisonGrid';
 import { getComparisons } from '../../../lib/queries/comparisons';
 
+import { constructMetadata } from "@/lib/seo";
+
+export const metadata = constructMetadata({
+  title: "Comparisons",
+  description: "Compare the best coffee gear and beans.",
+  url: "https://coffeefornoobs.com/comparisons"
+});
+
+
+
 export default async function ComparisonsPage() {
   const comparisons = await getComparisons();
   const featured = comparisons[0];
